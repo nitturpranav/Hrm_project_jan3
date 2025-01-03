@@ -376,7 +376,7 @@ await fixture.page.getByRole('option', { name: 'US - Vacation' }).click();
 
         async fetchTableDataMaps() 
         {
-            const button = fixture.page.locator(`//span[text()="Leave"]`);
+        const button = fixture.page.locator(`//span[text()="Leave"]`);
         await button.click();
 
         const MyLeaveButton = fixture.page.locator(`//a[text()="My Leave"]`);
@@ -410,5 +410,44 @@ await fixture.page.getByRole('option', { name: 'US - Vacation' }).click();
             const filteredComments = comments.filter(comment => comment === "Resort");
         
             return filteredComments;
+    }
+
+    async validateCommentSection(comment: string)
+    {
+        const button = fixture.page.locator(`//span[text()="Leave"]`);
+        await button.click();
+
+        const MyLeaveButton = fixture.page.locator(`//a[text()="My Leave"]`);
+        await MyLeaveButton.click();
+
+        await fixture.page.waitForTimeout(5000);
+            const headerCells = await fixture.page.locator('.oxd-table-header-cell.oxd-padding-cell.oxd-table-th').all();
+            const rows = await fixture.page.locator('.oxd-table-row').all();
+            const tableDataMap = new Map<string, string[]>(); // Initialize a Map to store the data
+        
+            // Extract the text content of each header cell
+            const headers = [];
+            for (const cell of headerCells) {
+                const headerText = await cell.innerText();
+                headers.push(headerText.trim()); // Trim any extra whitespace
+                tableDataMap.set(headerText.trim(), []); // Initialize an array for each header in the Map
+            }
+        
+            // Extract the text content of each row
+            for (const row of rows) {
+                const cells = await row.locator('.oxd-table-cell.oxd-padding-cell').all();
+                for (let i = 0; i < cells.length; i++) {
+                    const cellText = await cells[i].innerText();
+                    const header = headers[i];
+                    tableDataMap.get(header)?.push(cellText.trim()); // Add the cell data to the corresponding header array
+                }
+            }
+        
+            // Filter comments where name is "Resort"
+            const comments = tableDataMap.get("Comments") || [];
+            const filteredComments = comments.filter(comment => comment === "party leda dheeraj");
+
+            return filteredComments.toString();
+
     }
  }
