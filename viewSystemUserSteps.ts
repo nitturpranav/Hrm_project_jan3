@@ -66,10 +66,16 @@ Then("the user should receive a success or failure message",async function ()
 
 }); 
 
-Then("the user should be able to view all the components within the Table.", async function () {
+Then("the user should be able to view all the components within the Table arrays.", async function () {
     //Table
 
-   const tableData = await viewSystemUserPage.fetchTableData();
+   const tableData = await viewSystemUserPage.fetchTableDataArrays();
 //    Array.from(tableData);
+    console.log(tableData);
+});
+
+Then("the user should be able to view all the components within the Table maps.", async function () {    
+    //Table
+    const tableData = await viewSystemUserPage.fetchTableDataMaps();
     console.log(tableData);
 });
