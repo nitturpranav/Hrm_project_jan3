@@ -29,10 +29,14 @@ Feature: Authenticated user can view system users
         Then the user should receive a success or failure message
         Examples:
             | From Date | To Date | 
-            | 2025-04-08  | 2025-04-08  |
-            # | 2025-04-08  | 2025-04-08  |
+            | 2025-09-05  | 2025-09-05  |
+            # | 2025-08-08  | 2025-04-08  |
             # | 2025-01-05  | 2025-01-05  |
 
-    @tableFetch
-    Scenario: User is able to view all components under the My Leave tab
-        Then the user should be able to view all the components within the Table.
+    @tableFetchArrays
+    Scenario: User is able to view all components under the My Leave tab using  arrays
+        Then the user should be able to view all the components within the Table arrays.
+
+    @tableFetchMaps
+    Scenario: User is able to view all components under the My Leave tab using maps
+        Then the user should be able to view all the components within the Table maps.
