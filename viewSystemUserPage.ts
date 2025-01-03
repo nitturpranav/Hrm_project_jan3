@@ -316,7 +316,7 @@ await fixture.page.getByRole('option', { name: 'US - Vacation' }).click();
         await fixture.page.waitForTimeout(2000);
   
         const commentTextBox = await fixture.page.locator('textarea')
-        commentTextBox.fill('Resort')
+        commentTextBox.fill('party leda dheeraj')
 
         const applyButton = await fixture.page.getByRole('button', { name: 'Apply' })
         expect(applyButton).toBeVisible();
@@ -336,62 +336,79 @@ await fixture.page.getByRole('option', { name: 'US - Vacation' }).click();
         }
     } 
 
-     async fetchTableData() {
+     async fetchTableDataArrays() {
 
-        // const button = fixture.page.locator(`//span[text()="Leave"]`);
-        // await button.click();
+        const button = fixture.page.locator(`//span[text()="Leave"]`);
+        await button.click();
 
-        // const MyLeaveButton = fixture.page.locator(`//a[text()="My Leave"]`);
-        // await MyLeaveButton.click();
+        const MyLeaveButton = fixture.page.locator(`//a[text()="My Leave"]`);
+        await MyLeaveButton.click();
 
-        // await fixture.page.waitForTimeout(5000);
+        await fixture.page.waitForTimeout(5000);
 
-        // // Locate all the header cells
-        // const headerCells = await fixture.page.locator('.oxd-table-header-cell.oxd-padding-cell.oxd-table-th').all();
-        // const rows = await fixture.page.locator('.oxd-table-row').all();
-        // const tableData = [];
-        // // Extract the text content of each header cell
-        // const headers = [];
-        // for await(const cell of headerCells) {
-        //     const headerText = await cell.innerText();
-        //     headers.push(headerText.trim()); // Trim any extra whitespace
-        // }
-        // tableData.push(headers);
+        // Locate all the header cells
+        const headerCells = await fixture.page.locator('.oxd-table-header-cell.oxd-padding-cell.oxd-table-th').all();
+        const rows = await fixture.page.locator('.oxd-table-row').all();
+        const tableData = [];
+        // Extract the text content of each header cell
+        const headers = [];
+        for await(const cell of headerCells) {
+            const headerText = await cell.innerText();
+            headers.push(headerText.trim()); // Trim any extra whitespace
+        }
+        tableData.push(headers);
 
-        // // Extract the text content of each row
+        // Extract the text content of each row
         
-        // for await(const row of rows) {
-        //     const rowData = [];
-        //     const cells = await row.locator('.oxd-table-cell.oxd-padding-cell').all();
-        //     for await(const cell of cells) {
-        //     const cellText = await cell.innerText();
-        //     rowData.push(cellText.trim()); // Trim any extra whitespace
-        //     }
-        //     tableData.push(rowData);
-        // }
-        
-        // return {tableData };
-        // }
-        const leaveDataMap = new Map<string, string[]>();
-        const headers = await fixture.page.locator('.orangehrm-container .oxd-table-header-cell.oxd-padding-cell.oxd-table-th').all();
-        const rows = await fixture.page.locator('.orangehrm-container .oxd-table-row').all();
-    
-        for (const row of rows) {
-            const cells = await row.locator('.oxd-table-cell.oxd-padding-cell').all();
+        for await(const row of rows) {
             const rowData = [];
-            for (const cell of cells) {
-                rowData.push(await cell.innerText());
+            const cells = await row.locator('.oxd-table-cell.oxd-padding-cell').all();
+            for await(const cell of cells) {
+            const cellText = await cell.innerText();
+            rowData.push(cellText.trim()); // Trim any extra whitespace
             }
-            if (rowData.length > 0) {
-                for (let i = 0; i < headers.length; i++) {
-                    const headerText = await headers[i].innerText();
-                    if (!leaveDataMap.has(headerText)) {
-                        leaveDataMap.set(headerText, []);
-                    }
-                    leaveDataMap.get(headerText)?.push(rowData[i]);
+            tableData.push(rowData);
+        }
+        
+        return {tableData };
+        }
+
+
+        async fetchTableDataMaps() 
+        {
+            const button = fixture.page.locator(`//span[text()="Leave"]`);
+        await button.click();
+
+        const MyLeaveButton = fixture.page.locator(`//a[text()="My Leave"]`);
+        await MyLeaveButton.click();
+
+        await fixture.page.waitForTimeout(5000);
+            const headerCells = await fixture.page.locator('.oxd-table-header-cell.oxd-padding-cell.oxd-table-th').all();
+            const rows = await fixture.page.locator('.oxd-table-row').all();
+            const tableDataMap = new Map<string, string[]>(); // Initialize a Map to store the data
+        
+            // Extract the text content of each header cell
+            const headers = [];
+            for (const cell of headerCells) {
+                const headerText = await cell.innerText();
+                headers.push(headerText.trim()); // Trim any extra whitespace
+                tableDataMap.set(headerText.trim(), []); // Initialize an array for each header in the Map
+            }
+        
+            // Extract the text content of each row
+            for (const row of rows) {
+                const cells = await row.locator('.oxd-table-cell.oxd-padding-cell').all();
+                for (let i = 0; i < cells.length; i++) {
+                    const cellText = await cells[i].innerText();
+                    const header = headers[i];
+                    tableDataMap.get(header)?.push(cellText.trim()); // Add the cell data to the corresponding header array
                 }
             }
-        }
-        return leaveDataMap;
+        
+            // Filter comments where name is "Resort"
+            const comments = tableDataMap.get("Comments") || [];
+            const filteredComments = comments.filter(comment => comment === "Resort");
+        
+            return filteredComments;
     }
-}
+ }
