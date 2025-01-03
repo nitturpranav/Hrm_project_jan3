@@ -40,3 +40,7 @@ Feature: Authenticated user can view system users
     @tableFetchMaps
     Scenario: User is able to view all components under the My Leave tab using maps
         Then the user should be able to view all the components within the Table maps.
+
+    @commentValidation
+    Scenario: Validate the comment section
+        Then validating the comment "party leda dheeraj" section
