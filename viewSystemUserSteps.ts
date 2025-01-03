@@ -79,3 +79,13 @@ Then("the user should be able to view all the components within the Table maps."
     const tableData = await viewSystemUserPage.fetchTableDataMaps();
     console.log(tableData);
 });
+
+Then("validating the comment {string} section",async function (comment: string) 
+{
+    //Comment
+    const commentName =await viewSystemUserPage.validateCommentSection(comment);
+    if(commentName === comment)
+    {
+        console.log("Comment Section is validated");
+    }
+}) ;
